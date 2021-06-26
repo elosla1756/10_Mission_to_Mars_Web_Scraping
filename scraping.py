@@ -14,7 +14,7 @@ def scrape_all():
     news_title, news_paragraph = mars_news(browser)
     img_url = featured_image(browser)
     facts = mars_facts()
-    hemisphere_image_urls = hemispheres(browser)
+    hemisphere_image_urls = hemisphere(browser)
     timestamp = dt.datetime.now()
 
     # Run all scraping functions and store results in dictionary
@@ -110,11 +110,11 @@ def mars_facts():
 
 ####### NEW #######
 # Defining the function for hemispheres
-def hemispheres(browser):
+def hemisphere(browser):
 
     # 1. Use browser to visit the URL 
-    url = 'https://astrogeology.usgs.gov/search/results?q=hemisphere+enhanced&k1=target&v1=Mars'
-    browser.visit(url)
+    url ='https://marshemispheres.com/'
+    browser.visit(url + 'index.html')
 
     # 2. Create a list to hold the images and titles.
     # hemispheres = hemi_soup.find_all("div", class_="item")
@@ -122,8 +122,9 @@ def hemispheres(browser):
 
     # 3. Write code to retrieve the image urls and titles for each hemisphere.
     for i in range(4):
-        browser.find_by_css('a.product-item h3')[i].click()
-        hemi_data = hemipshere_scraping(browser.html) 
+        browser.find_by_css('a.product-item img')[i].click()
+        hemi_data = hemipshere_scraping(browser.html)
+        hemi_data['img_url'] = url + hemi_data['img_url']
         
         # Append hemisphere list
         hemisphere_image_urls.append(hemi_data)
@@ -134,7 +135,7 @@ def hemispheres(browser):
 def hemipshere_scraping(html_text):
     # Parse html data with soup
     hemi_soup = soup(html_text, 'html.parser')
-    
+        
     # Add a try/except for error handling
     try:
         # Find the relative image url
